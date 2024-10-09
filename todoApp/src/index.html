@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .task {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .task h2 {
+            margin: 0;
+        }
+        .task p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Task Management</h1>
+<div id="taskContainer"></div>
+
+<script>
+    // Function to fetch and display tasks
+    async function fetchTasks() {
+        try {
+            const response = await fetch('http://localhost:8080/tasks'); // Adjust the URL as needed
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const tasks = await response.json();
+            displayTasks(tasks);
+        } catch (error) {
+            console.error('There has been a problem with your fetch operation:', error);
+        }
+    }
+
+    // Function to display tasks on the UI
+    function displayTasks(tasks) {
+        const taskContainer = document.getElementById('taskContainer');
+        taskContainer.innerHTML = ''; // Clear previous tasks
+
+        tasks.forEach(task => {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task';
+            taskDiv.innerHTML = `
+                <h2>${task.title}</h2>
+                <p><strong>Description:</strong> ${task.description}</p>
+                <p><strong>Type:</strong> ${task.type}</p>
+                <p><strong>Frequency:</strong> ${task.frequency}</p>
+                <p><strong>Status:</strong> ${task.status}</p>
+                <p><strong>Duration:</strong> ${task.duration} minutes</p>
+                <p><strong>Priority:</strong> ${task.priority}</p>
+                <p><strong>Category:</strong> ${task.category}</p>
+            `;
+            taskContainer.appendChild(taskDiv);
+        });
+    }
+
+    // Fetch tasks when the page loads
+    window.onload = fetchTasks;
+</script>
+
+</body>
+</html>
